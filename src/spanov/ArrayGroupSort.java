@@ -3,7 +3,7 @@ package spanov;
 public class ArrayGroupSort {
 
     public static enum Order {
-        DESC(1), ASC(-1);
+        DESC(-1), ASC(1);
 
         private int value;
 

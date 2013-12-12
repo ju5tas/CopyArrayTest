@@ -23,7 +23,6 @@ public class Main {
         arrayGroupSort.sort().print();
         arrayGroupSort.orderBy(Order.ASC).sort().print();
 
-
         System.out.println("1x36:");
         arrayGroupSort.setGroupProperties(1, 36).print();
         arrayGroupSort.sort().print();
