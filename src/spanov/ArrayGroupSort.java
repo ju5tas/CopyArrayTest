@@ -11,8 +11,8 @@ public class ArrayGroupSort {
             return value;
         }
 
-        Order(int i) {
-            value = i;
+        private Order(int value) {
+            this.value = value;
         }
     }
 
@@ -20,20 +20,8 @@ public class ArrayGroupSort {
     private int groupsCount;
     private Order order = Order.ASC;
 
-
     private int[] array;
     private int[] tmpArray;
-    private boolean isPrintProcess = false;
-
-    public ArrayGroupSort() {
-        this(2, 10);
-    }
-
-    public ArrayGroupSort setProperties(int groupLength, int groupsCount) {
-        if (groupLength * groupsCount != array.length) throw new RuntimeException("setProperties(): wrong parameters.");
-        init(groupLength, groupsCount);
-        return this;
-    }
 
     private void init(int groupLength, int groupsCount) {
         this.groupsCount = groupsCount;
@@ -41,9 +29,8 @@ public class ArrayGroupSort {
         tmpArray = new int[this.groupLength];
     }
 
-    public ArrayGroupSort orderBy(Order order) {
-        this.order = order;
-        return this;
+    public ArrayGroupSort() {
+        this(2, 10);
     }
 
     public ArrayGroupSort(int groupLength, int groupsCount) {
@@ -56,21 +43,45 @@ public class ArrayGroupSort {
         array = arr;
     }
 
-    private void printIndicated(int s1, int s2) {
-        for (int i = 0; i < groupsCount; i++) {
-            System.out.print(i == s1 || i == s2 ? "(" : " ");
-            for (int j = 0; j < groupLength; j++) {
-                System.out.print(getElementInGroup(i, j));
-            }
-            System.out.print(i == s2 || i == s1 ? ")" : " ");
-        }
-        System.out.println();
+    public ArrayGroupSort setGroupProperties(int groupLength, int groupsCount) {
+        if (groupLength * groupsCount != array.length) return this;
+        init(groupLength, groupsCount);
+        return this;
+    }
+
+    public ArrayGroupSort orderBy(Order order) {
+        this.order = order;
+        return this;
     }
 
     public ArrayGroupSort fillRandom() {
         for (int i = 0; i < array.length; i++) {
             array[i] = (int) (Math.random() * 10);
         }
+        return this;
+    }
+
+    public ArrayGroupSort sort() {
+        int n = groupsCount;
+        int newn;
+        do {
+            newn = 0;
+            for (int i = 1; i < n; i++) {
+                if (order.getValue() * compare(i - 1, i) > 0) {
+                    swap(i - 1, i);
+                    newn = i;
+                }
+            }
+            n = newn;
+        } while (n > 0);
+        return this;
+    }
+
+    public ArrayGroupSort print() {
+        for (int i = 0; i < groupsCount; i++) {
+            printGroup(i);
+        }
+        System.out.println();
         return this;
     }
 
@@ -97,23 +108,6 @@ public class ArrayGroupSort {
         System.arraycopy(array, getElementIdByGroup(s1, 0), tmpArray, 0, groupLength);
         System.arraycopy(array, getElementIdByGroup(s2, 0), array, getElementIdByGroup(s1, 0), groupLength);
         System.arraycopy(tmpArray, 0, array, getElementIdByGroup(s2, 0), groupLength);
-        if (isPrintProcess) printIndicated(s1, s2);
-    }
-
-    public ArrayGroupSort sort() {
-        int n = groupsCount;
-        int newn;
-        do {
-            newn = 0;
-            for (int i = 1; i < n; i++) {
-                if (order.getValue() * compare(i - 1, i) > 0) {
-                    swap(i - 1, i);
-                    newn = i;
-                }
-            }
-            n = newn;
-        } while (n > 0);
-        return this;
     }
 
     private void printGroup(int i) {
@@ -124,16 +118,4 @@ public class ArrayGroupSort {
         System.out.print("]");
     }
 
-    public ArrayGroupSort print() {
-        for (int i = 0; i < groupsCount; i++) {
-            printGroup(i);
-        }
-        System.out.println();
-        return this;
-    }
-
-    public ArrayGroupSort setPrintProcess(boolean printProcess) {
-        isPrintProcess = printProcess;
-        return this;
-    }
 }
